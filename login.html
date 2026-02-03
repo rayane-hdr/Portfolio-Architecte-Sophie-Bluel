@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sophie Bluel - Connexion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+        #login {
+            width: 380px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        #login h2 {
+            margin-bottom: 30px;
+        }
+        #login form {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        #login label {
+            margin: 15px 0 5px 0;
+        }
+        #login input[type="email"], #login input[type="password"] {
+            height: 50px;
+            font-size: 1.2em;
+            border: none;
+            box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+            padding: 0 10px;
+        }
+        #login input[type="submit"] {
+            margin-top: 30px;
+        }
+        #login a {
+            color: #3D3D3D;
+            text-decoration: underline;
+            font-size: 0.9em;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+    <nav>
+        <ul>
+            <li><a href="index.html" style="text-decoration:none; color:inherit;">projets</a></li>
+            <li>contact</li>
+            <li>login</li>
+            <li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <section id="login">
+        <h2>Log In</h2>
+        <form id="login-form">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required>
+            <label for="password">Mot de passe</label>
+            <input type="password" name="password" id="password" required>
+            <input type="submit" value="Se connecter">
+            <div id="error-message" class="error-message">Erreur dans l’identifiant ou le mot de passe</div>
+        </form>
+        <a href="#">Mot de passe oublié</a>
+    </section>
+</main>
+<footer>
+    <nav>
+        <ul>
+            <li>Mentions Légales</li>
+        </ul>
+    </nav>
+</footer>
+<script>
+    const loginForm = document.getElementById('login-form');
+    const errorMessage = document.getElementById('error-message');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('http://localhost:5678/api/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                window.location.href = 'index.html';
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Erreur lors de la connexion:', error);
+            errorMessage.style.display = 'block';
+        }
+    });
+</script>
+</body>
+</html>
